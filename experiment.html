@@ -5,11 +5,21 @@
 <script type="text/javascript" src="lib/paper.js"></script>
 <!-- Load an external PaperScript and associate it with our canvas -->
 <script type ="text/paperscript" src="experiment.js" canvas="experiment"></script>
+<script>
+  window.onload = function() {
+    var canvas = document.getElementById("experiment");
+    canvas.height = document.documentElement.clientHeight;
+    canvas.width  = document.documentElement.clientWidth;
+    }
+ </script>
+}
 <style type="text/css">
+
 	* {
 	margin: 0;
 	padding: 0;
 	line-height: 0;
+  background-color:black;
 	}	
 </style>
 </head>
