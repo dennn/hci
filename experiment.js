@@ -1,3 +1,22 @@
+/* JS Setup code */
+window.onload = function() {
+     var canvas = document.getElementById("experiment");
+     canvas.height = document.documentElement.clientHeight;
+     canvas.width  = document.documentElement.clientWidth;
+}
+
+/* Parse Setup Code */
+Parse.initialize("SSooDY5RjkTIeArUgMHRjw5NXExayT3c5jwvvqiy", "iyvaGqgdqmfldFuikgxgW6wVWPCxFD7yopIk2fGn");
+ 
+/*var TestObject = Parse.Object.extend("TestObject");
+var testObject = new TestObject();
+testObject.save({foo: "bar"}, {
+  success: function(object) {
+    alert("yay! it worked");
+  }
+});*/
+
+/* Paper Code */
 var size = view.size;
 
 var position = Point.random() * size;
