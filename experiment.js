@@ -1,7 +1,19 @@
-/* Parse Setup Code */
+/* Parse setup code */
 Parse.initialize("SSooDY5RjkTIeArUgMHRjw5NXExayT3c5jwvvqiy", "iyvaGqgdqmfldFuikgxgW6wVWPCxFD7yopIk2fGn");
 
-/* Paper Code */
+/* Buzz sound library code */
+var backgroundNoise = new buzz.sound("audio.mp3", {
+    preload: true,
+    autoplay: false,
+    loop: true  
+});
+
+//Check to make sure the browser supports the codec and HTML5 audio tag
+if (!buzz.isMP3Supported() || !buzz.isSupported()) {
+    alert("Your browser doesn't support playing MP3 HTML5 audio. Try Chrome!!");
+}
+
+/* Paper code */
 var canvasSize = view.size;
 var testSubjectNumber;
 var testNo = 0;
@@ -74,7 +86,9 @@ function generateTest()
         else //end of session
         {
             finished = 1;
+            backgroundNoise.stop();
             console.log("End of testing.");
+            levelText.content = 'Complete';
             window.alert("All of your tests have finished.\nThank you for taking part.");
             circle1.remove();
             circle2.remove();
@@ -83,6 +97,7 @@ function generateTest()
         }
     }
     
+    backgroundNoise.setVolume(soundLevels[soundNo]);    
     levelText.content = 'Test ' + levelsComplete + '/' + (soundLevels.length * tests.length);
     
     console.log("Test No: " + testNo);
@@ -107,6 +122,10 @@ function generateTest()
     c2id = circle2.id;
     circle2.visible = false;
 }
+
+//Start playing the sound
+backgroundNoise.play();
+backgroundNoise.setVolume(soundLevels[soundNo]);    
 
 //Run the first test generation:
 generateTest();
@@ -181,7 +200,8 @@ function onMouseMove(event) {
             view.draw();
             timer2 = setTimeout(function(){
                 circle2.fillColor = 'green';
-                done = 1;saveResult();
+                done = 1;
+                saveResult();
                 console.log("Total Time: " + Math.abs(finishTime - startTime) + "ms");
                 generateTest();
                 view.draw();
