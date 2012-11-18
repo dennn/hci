@@ -5,6 +5,13 @@
 <script type="text/javascript" src="lib/paper.js"></script>
 <script type="text/javascript" src="lib/parse-1.1.11.min.js"></script>
 <!-- Load our Javascript and CSS code -->
+<script>
+window.onload = function() {
+     var canvas = document.getElementById("experiment");
+     canvas.height = document.documentElement.clientHeight;
+     canvas.width  = document.documentElement.clientWidth;
+}
+</script>
 <script type ="text/paperscript" src="experiment.js" canvas="experiment"></script>
 <link rel="stylesheet" href="experiment.css">
 </head>
