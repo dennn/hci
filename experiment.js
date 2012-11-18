@@ -17,9 +17,18 @@ var startTime = 0;
 var finishTime = 0;
 var ready = 0;
 var moving = 0;
-var testSubjectNo = 1;
+var done = 0;
+var missed = 0;
+var testSubjectNo = 0;
 var testNo = 1;
-var timer;
+var timer1;
+var timer2;
+
+//Ask for the test subjects ID (to be filled in by tester)
+while ((testSubjectNo < 1) || (isNaN(testSubjectNo)))
+  testSubjectNo = parseInt(prompt("Enter the test subjects ID:","1"));
+  
+console.log("Test Subject:" + testSubjectNo);
 
 // Generate a bounding point so that part of the circle can not be off-screen:
 var bound1 = new Point(canvasSize.width - 2*circleSize1, canvasSize.height - 2.5*circleSize1)
@@ -42,6 +51,7 @@ circle1.smooth();
 var circle2 = new Path.Circle(new Point(position2.x, position2.y), circleSize2);
 circle2.fillColor = 'red';
 circle2.smooth();
+circle2.visible = false;
 
 //Detect when the mouse has hit the shape:
 var hitOptions = {
@@ -62,7 +72,8 @@ function saveResult() {
     testSubject.set("position2", position2);
     testSubject.set("minDistance", minDistance);
     testSubject.set("circleDistance", position1.getDistance(position2, 0));
-    testSubject.set("totalTime", Math.abs(finishTime - startTime));    
+    testSubject.set("totalTime", Math.abs(finishTime - startTime));
+    testSubject.set("missed", missed);
     
     testSubject.save(null, {
     success: function(testSubject) {
@@ -87,6 +98,7 @@ function onMouseMove(event) {
         else
         {
             hitResult.item.fillColor = 'green';
+            circle2.visible = true;
         }
         if (startTime == 0)
         {
@@ -94,18 +106,20 @@ function onMouseMove(event) {
             //(Note: this is the time that the user entered the circle, not nessersairly too useful for us but indicates
             // that they have entered the circle nonetheless.)
             startTime = new Date().getTime();
-            timer = setTimeout(function(){ready = 1;circle1.fillColor = 'green';view.draw();},3000);
+            timer1 = setTimeout(function(){ready = 1;circle1.fillColor = 'green';circle2.visible = true;view.draw();},3000);
         }
     }
-    //When circle2 is hit and circle1 has turned green (timer has started)
+    //When circle2 is hit and circle1 has turned green (timer1 has started)
     else if (hitResult && (hitResult.item.id == 3) && moving)
     {
         finishTime = new Date().getTime();
-        console.log("Total Time: " + Math.abs(finishTime - startTime) + "ms");
+        circle2.fillColor = 'yellow';
+        view.draw();
+        timer2 = setTimeout(function(){circle2.fillColor = 'green';view.draw();done = 1;saveResult();console.log("Total Time: " + Math.abs(finishTime - startTime) + "ms");},1000);
         moving = 0;
-        saveResult();
+        
     }
-    //When no items on the screen have been hit and the timer hasn't started:
+    //When no items on the screen have been hit and the timer1 hasn't started:
     else if (ready == 0)
     {
         //If the circle is yellow, they didn't stay there for long enough. Reset to red.
@@ -118,10 +132,11 @@ function onMouseMove(event) {
         else
         {
           circle1.fillColor = 'green';
+          circle2.visible = true;
           startTime = 0;
         }
-        clearTimeout(timer);
-        timer = null;
+        clearTimeout(timer1);
+        timer1 = null;
     }
     //On first leaving the green and ready to go circle:
     else if (!moving && finishTime == 0)
@@ -129,6 +144,17 @@ function onMouseMove(event) {
         startTime = new Date().getTime();
         console.log("Started Moving at: " + startTime);
         moving = 1;
+    }
+    //Entered circle and left again before 1 second verification:
+    else if (done == 0 && finishTime != 0 && !hitResult)
+    {
+        clearTimeout(timer2);
+        timer2 = null;
+        finishTime = 0;
+        missed = 1;
+        moving = 1;
+        circle2.fillColor = 'red';
+        view.draw();
     }
 }
 
