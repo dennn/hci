@@ -39,7 +39,11 @@ var levelText = new PointText(new Point(20,20));
 levelText.fillColor = 'white';
 
 // "Constants" that define testing mode and tests:
-var soundLevels = [0,40,60,100];
+var sampleLevels = [0,40,60,100];
+
+var x = window.prompt("Enter the order in which volumes should be played, i.e. 2341","1234");
+var soundLevels = [sampleLevels[parseInt(x.charAt(0))-1],sampleLevels[parseInt(x.charAt(1))-1],sampleLevels[parseInt(x.charAt(2))-1],sampleLevels[parseInt(x.charAt(3))-1]];
+
 var tests = [[1234,125,631,168],[710,284,1060,345],[429,118,1237,229],[232,60,535,325],[479,135,941,377],[1220,400,483,329],[1298,149,367,297]];
 
 testSubjectNumber = randomUUID();  
