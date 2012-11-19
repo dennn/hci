@@ -1,3 +1,13 @@
+/*Confirm leaving the page*/
+window.onbeforeunload = function (evt) {
+ var message = 'Are you sure you want to quit the testing?';
+if (typeof evt == 'undefined')
+    evt = window.event;
+if (evt)
+    evt.returnValue = message;
+return message;
+}
+
 /* Parse setup code */
 Parse.initialize("SSooDY5RjkTIeArUgMHRjw5NXExayT3c5jwvvqiy", "iyvaGqgdqmfldFuikgxgW6wVWPCxFD7yopIk2fGn");
 
