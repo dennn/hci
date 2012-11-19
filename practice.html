@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Load the Paper.js and Parse.js libraries -->
+<script type="text/javascript" src="lib/paper.js"></script>
+<script type="text/javascript" src="lib/parse-1.1.11.min.js"></script>
+<script type="text/javascript" src="lib/buzz.js"></script>
+<!-- Load our Javascript and CSS code -->
+<script>
+window.onload = function() {
+     var canvas = document.getElementById("practice");
+     canvas.height = document.documentElement.clientHeight;
+     canvas.width  = document.documentElement.clientWidth;
+}
+</script>
+<script type ="text/paperscript" src="practice.js" canvas="practice"></script>
+<link rel="stylesheet" href="practice.css">
+</head>
+<!-- Main code starts here -->
+<body>
+	<canvas id="practice" resize="true" style="background:black"|></canvas>
+</body>
+</html>

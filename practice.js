@@ -1,16 +1,3 @@
-/*Confirm leaving the page*/
-window.onbeforeunload = function (evt) {
- var message = 'Are you sure you want to quit the testing?';
-if (typeof evt == 'undefined')
-    evt = window.event;
-if (evt)
-    evt.returnValue = message;
-return message;
-}
-
-/* Parse setup code */
-Parse.initialize("SSooDY5RjkTIeArUgMHRjw5NXExayT3c5jwvvqiy", "iyvaGqgdqmfldFuikgxgW6wVWPCxFD7yopIk2fGn");
-
 /* Buzz sound library code */
 var backgroundNoise = new buzz.sound("audio.mp3", {
     preload: true,
@@ -26,7 +13,7 @@ if (!buzz.isMP3Supported() || !buzz.isSupported()) {
 /* Paper code */
 var canvasSize = view.size;
 var testSubjectNumber;
-var testNo = 0;
+var testNo = -1;
 var soundNo = 0;
 var timer1;
 var timer2;
@@ -39,15 +26,15 @@ var levelText = new PointText(new Point(20,20));
 levelText.fillColor = 'white';
 
 // "Constants" that define testing mode and tests:
-var soundLevels = [0,40,60,100];
-var tests = [[1234,125,631,168],[710,284,1060,345],[429,118,1237,229],[232,60,535,325],[479,135,941,377],[1220,400,483,329],[1298,149,367,297]];
+var soundLevels = [0];
+var tests = [[1234,125,631,168],[710,284,1060,345],[429,118,1237,229]];
 
 testSubjectNumber = randomUUID();  
-console.log("Test Subject: " + testSubjectNumber);
+console.log("Test Subject (practice only): " + testSubjectNumber);
 
 //Generate pre-testing information:
 //Shuffle the test order:
-var testOrder = [0,1,2,3,4,5,6];
+var testOrder = [0,1,2];
 
 function randOrd() {
   return (Math.round(Math.random())-0.5);
@@ -96,9 +83,9 @@ function generateTest()
         {
             finished = 1;
             backgroundNoise.stop();
-            console.log("End of testing.");
-            levelText.content = 'Complete';
-            window.alert("All of your tests have finished.\nThank you for taking part.");
+            console.log("End of practice testing.");
+            levelText.content = 'Practice Complete';
+            window.alert("This is the end of the practice.");
             circle1.remove();
             circle2.remove();
             view.draw();
@@ -107,9 +94,9 @@ function generateTest()
     }
     
     backgroundNoise.setVolume(soundLevels[soundNo]);    
-    levelText.content = 'Test ' + levelsComplete + '/' + (soundLevels.length * tests.length);
+    levelText.content = 'Practice ' + levelsComplete + '/' + (soundLevels.length * tests.length);
     
-    console.log("Test No: " + testNo);
+    console.log("Practice No: " + testNo);
     
     position1 = new Point(tests[testOrder[testNo]][0],tests[testOrder[testNo]][1]);
     position2 = new Point(tests[testOrder[testNo]][2],tests[testOrder[testNo]][3]);
@@ -146,29 +133,6 @@ var hitOptions = {
     fill: true,
     tolerance: 0 //to hitting the shape
 };
-
-function saveResult() {
-    var Test = Parse.Object.extend("Tests");
-    var test = new Test();
-    test.set("SubjectID", testSubjectNumber);
-    test.set("TestID", testOrder[testNo]);
-    test.set("TestNumber", testNo);
-    test.set("SoundLevel", soundLevels[soundNo]);
-    test.set("PositionA", position1);
-    test.set("PositionB", position2);
-    test.set("Distance", position1.getDistance(position2, 0));
-    test.set("Time", Math.abs(finishTime - startTime));
-    test.set("Missed", missed);
-    
-    test.save(null, {
-    success: function(test) {
-      console.log("Saved successfully!");
-    },
-    error: function(test, error) {
-      window.alert("Save failed!");
-    }
-  });
-}
 
 function onMouseMove(event) {
     if (!finished)
@@ -210,7 +174,6 @@ function onMouseMove(event) {
             timer2 = setTimeout(function(){
                 circle2.fillColor = 'green';
                 done = 1;
-                saveResult();
                 console.log("Total Time: " + Math.abs(finishTime - startTime) + "ms");
                 generateTest();
                 view.draw();
